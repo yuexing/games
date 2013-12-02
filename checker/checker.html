@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Checker</title>
+<meta name="Keywords" content="checker,game">
+<meta name="Description" content="checker game">
+<link rel="stylesheet" href="base.css" />
+</head>
+
+<body>
+<div class="container">
+    <h1>Checker Game</h1>
+
+    <div class="choices center">
+        <input type="radio" name="first" id="human_first" checked/>
+        <label for="human_first">Player1(Gray) First</label>
+        <input type="radio" name="first" id="computer_first"/>
+        <label for="computer_first">Player2(Red) First</label>
+
+        <input type="radio" name="one" id="one_player" checked/>
+        <label for="one_player">One player - AI</label>
+        <input type="radio" name="one" id="two_player"/>
+        <label for="two_player">Two players</label>
+
+        <input type="checkbox" name="force_jump" id="force_jump" checked/>
+        <label for="force_jump">Force Jump</label>
+
+        <input type="button" name="start" id="start" value="Start"/>
+        <input type="button" name="revert" id="revert" value="Revert"/>
+    </div>
+
+    <div class="main">
+        <table>
+            <!-- 8 * 8  -->
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr> 
+        </table>
+    </div>
+
+    <div class="side">
+        <div>
+            <h3>Info</h3>
+            <textarea id="info">
+            </textarea>
+        </div>
+        <div>
+            <h3>Assert</h3>
+            <textarea id="assert">
+            </textarea>
+        </div>
+        <div>
+            <h3>Debug</h3>
+            <textarea id="debug">
+            </textarea>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="checker.js"></script>
+</body>
+</html>

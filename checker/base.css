@@ -1,0 +1,121 @@
+.container {
+    width: 910px;
+    margin: 0 auto;
+}
+
+.main, .side {
+    float: left;
+}
+
+.main {
+    width: 600px;
+}
+
+#debug, #info, #assert {
+    margin: 20px 0;
+    padding: 5px 3px;
+    border: 1px solid #ccc;
+    height: 150px;
+    width: 300px;
+}
+
+#assert {
+    color: red;
+}
+
+#debug {
+    color: blue;
+}
+
+#info {
+    color: green;
+}
+
+h1, h3{
+    font-weight: bold;
+    text-align: center;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.choices {
+    margin: 10px 0;
+}
+
+#reset {
+    padding: 2px 10px 1px;
+}
+
+table {
+    border-collapse: collapse;
+    border: 0px;
+    margin: 0 auto;
+}
+
+table td {
+    height: 60px;
+    width: 60px;
+    border: 2px solid #000;
+    background-color: silver;
+    background-size: 60px 60px;
+}
+
+.player1 {
+   background-image: url("player1.png");
+   background-color: #fff;
+}
+
+.player2 {
+   background-image: url("player2.png");
+   background-color: #fff;
+}
+
+.player1k {
+   background-image: url("player1k.png");
+   background-color: #fff;
+}
+
+.player2k {
+    background-image: url("player2k.png");
+   background-color: #fff;
+}
+
+.ai1 {
+   background-image: url("AI1.png"); 
+   background-color: #fff;
+}
+
+.ai2 {
+   background-image: url("AI2.png"); 
+   background-color: #fff;
+}
+
+.ai1k {
+   background-image: url("AI1k.png"); 
+   background-color: #fff;
+}
+
+.ai2k {
+   background-image: url("AI2k.png"); 
+   background-color: #fff;
+}
+
+.path {
+   background-image: url("path.png"); 
+   background-color: #b9ffff;
+}
+
+.center {
+    text-align: center;
+}
+
+.hidden {
+    visibility: hidden;
+}
