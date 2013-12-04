@@ -28,8 +28,13 @@
         var idx = src.indexOf(e);
         if (idx > -1) {
             return dest[idx];
-        } else assert("arr_del idx == -1");
+        } else assert("arr_get idx == -1");
         return null
+    }
+
+    function arr_contains (src, e) {
+        var idx = src.indexOf(e);
+        return (idx != -1);
     }
 
     function arr_empty (arr) {
@@ -336,6 +341,20 @@
         return (x > -1 && y > -1 && x < 8 && y < 8);
     }
 
+    Pair.prototype.get_oppo_dir = function (f) {
+        switch (f) {
+            case this.lu:
+                return this.rb;
+            case this.ru:
+                return this.lb;
+            case this.lb:
+                return this.ru;
+            case this.rb:
+                return this.lu;
+            default:
+                assert ("error dir!");
+        }
+    }
     // the next left-up one
     Pair.prototype.lu = function () {
         var x = this.x - 1, y = this.y -1;
@@ -414,16 +433,23 @@
         return true;
     }
 
-    // NB: A roughly correct score as I do not consider the 
-    // direction of its opponent
     Pair.prototype.get_score = function (nexts, d) {
         if (this.make_king && !d.is_king) return 2;
-
         for (var i in nexts) {
             var tmp = nexts[i].apply(this);
-            if (tmp && game.is_opponent(tmp)) return -1;
+            if (tmp && game.is_opponent(tmp)) {
+                // see whether this oppo can take me.
+                var op1 = this.get_oppo_dir(nexts[i]);
+                var d1 = tmp.d;
+                var nexts1 = d1.get_directions();
+                if (arr_contains(nexts1, op1)) {
+                    var tmp1 = op1.apply(this);
+                    if (tmp1 && game.is_blank(tmp1)) {
+                        return -1;
+                    }
+                }
+            }
         }
-
         return 1;
     }
 
@@ -786,11 +812,44 @@
             return dices;
         }
 
+        Game.prototype.op_dices = function () {
+            var dices = null;
+            if (this.human) {
+                dices = this.adices;
+            }  else {
+                dices = this.hdices;
+            }
+            return dices;
+        }
+
         // Evaluation function.
-        // Given the current game state, the score the current player can make. 
-        // \p is_max is true, the current player is max player; otherwise, 
-        // min player.
+        var ws = [[0,4,0,4,0,4,0,4],
+                  [4,0,3,0,3,0,3,0],
+                  [0,3,0,2,0,2,0,4],
+                  [4,0,2,0,1,0,3,0],
+                  [0,3,0,1,0,2,0,4],
+                  [4,0,2,0,2,0,3,0],
+                  [0,3,0,3,0,3,0,4],
+                  [4,0,4,0,4,0,4,0]];
+
         Game.prototype.get_score = function (is_max) {
+            var dices = this.cur_dices();
+            var sum = 0;
+            for (var i in dices) {
+                var d = dices[i];
+                var p = d.p;
+                sum += ws[p.x][p.y];
+            }
+            dices = this.op_dices();
+            for (var i in dices) {
+                var d = dices[i];
+                var p = d.p;
+                sum -= ws[p.x][p.y];
+            }
+            return sum;
+        }
+
+        Game.prototype.get_score1 = function (is_max) {
             if (this.winner == "player1") {
                 return Number.NEGATIVE_INFINITY;
             } else if (this.winner == "player2") {
@@ -813,6 +872,31 @@
             else return -sum;
         }
 
+        Game.prototype.get_score2 = function (is_max) {
+            if (this.winner == "player1") {
+                return -1;
+            } else if (this.winner == "player2") {
+                return 1; 
+            }
+            var dices = this.cur_dices();
+            var sum = 0;
+            for (var i in dices) {
+                var d = dices[i];
+                var p = d.p;
+                d.can_move(true);
+                d.can_jump(true);
+                for (var j in dices[i].moves) {
+                    var mj = d.moves[j];
+                    if (this.flag_jump && !this.exec) continue;
+                    sum += mj.get_score();
+                }
+            }
+            if (is_max) return (this.adices.length 
+                    - (this.hdices.length - sum));
+            else return (this.hdices.length 
+                    - (this.adices.length - sum));
+        }
+
         // It may be better to have Dice/Pair have a field game pointing to
         // which game they belong to.
         Game.prototype.alphabeta = function (depth, alpha, beta, is_max) {
@@ -822,7 +906,6 @@
             }
 
             var dices = this.cur_dices();
-
             var stored_game = game;
             game = this;
             for (var i in dices) {
@@ -843,10 +926,10 @@
                     // revert
                     this.restore(true);
                     // ai_game: take turn, set jump_flag
-                    var hack = game;
+                    var xxx = game;
                     game = ai_game;
                     ai_game.turn();
-                    game = hack;
+                    game = xxx;
                     // ai_game: run alpha-beta pruning minimax
                     var ret1 = ai_game.alphabeta(depth-1, alpha, beta, !is_max);
                     if (is_max) {
@@ -1013,6 +1096,6 @@
     }
 
     var game;
-    var MINI_MAX_DEPTH = 3;
+    var MINI_MAX_DEPTH = 4;
     start_game (true, true, true);
 })();
