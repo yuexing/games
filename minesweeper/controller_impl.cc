@@ -108,11 +108,13 @@ Controller::ClickRes ControllerImpl::click(int x, int y) {
         cell.cover = CellMeta::CoverType::UnCovered;
         return ClickRes::Lose;
     } else {
-        auto nuncovered = uncover_neighbors(m_board, x, y);
-        m_nuncovered += nuncovered;
-        LOG("ControllerImpl::" << __FUNCTION__ << "(" << x << "," << y << "), nuncovered: " 
-            << nuncovered << ", m_nuncovered: " << m_nuncovered << std::endl);
-        debug_board(m_board);
+        if(m_board[x][y].cover == CellMeta::CoverType::Covered) { 
+            auto nuncovered = uncover_neighbors(m_board, x, y);
+            m_nuncovered += nuncovered;
+            LOG("ControllerImpl::" << __FUNCTION__ << "(" << x << "," << y << "), nuncovered: " 
+                << nuncovered << ", m_nuncovered: " << m_nuncovered << std::endl);
+            debug_board(m_board);
+        }
         return m_nuncovered + m_nmines == m_board.size() * m_board.size()? ClickRes::Win: ClickRes::None;
     }
 }

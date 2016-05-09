@@ -50,12 +50,14 @@ static void verifyBoard(const std::vector<std::vector<CellMeta>>& b, int nboard,
 TEST(ControllerImplTestCase, testInit) {
 	{
 		auto contoller = std::make_shared<ControllerImpl>(2, 1);
+		contoller->click(0, 0);
 		auto board = contoller->getBoard();
 		verifyBoard(board, 2, 1);
 	}
 	
 	{
 		auto contoller = std::make_shared<ControllerImpl>(5, 10);
+		contoller->click(0, 0);
 		auto board = contoller->getBoard();
 		verifyBoard(board, 5, 10);
 	}
@@ -65,34 +67,20 @@ TEST(ControllerImplTestCase, testClick) {
 	{
 		auto contoller = std::make_shared<ControllerImpl>(2, 1);
 		auto board = contoller->getBoard();
-		auto mine = getMines(board)[0];
-
-		ASSERT_EQ(contoller->click(mine.first, mine.second), Controller::ClickRes::Lose);
+		ASSERT_EQ(contoller->click(0, 0), Controller::ClickRes::Win);
 	}
 	{
-		auto contoller = std::make_shared<ControllerImpl>(2, 1);
+		auto contoller = std::make_shared<ControllerImpl>(3, 2);
+		bool has_win = contoller->click(0, 0) == Controller::ClickRes::Win;
 		auto board = contoller->getBoard();
-		auto mine = getMines(board)[0];
-
-		bool is_first = true;
-		visit_neighbors(2, mine.first, mine.second, [&contoller, &board, &is_first](int x, int y){
-			if(is_first) {
-				is_first = false;
-				ASSERT_EQ(contoller->click(x, y), Controller::ClickRes::Win);
-			}
-		});	
-	}
-	{
-		auto contoller = std::make_shared<ControllerImpl>(3, 1);
-		auto board = contoller->getBoard();
-		auto mine = getMines(board)[0];
-
-		bool has_win = false;
-		visit_neighbors(3, mine.first, mine.second, [&contoller, &board, &has_win](int x, int y){
-			if(!has_win) {
-				has_win = (contoller->click(x, y) == Controller::ClickRes::Win);
-			}
-		});
+		auto mines = getMines(board);
+		for(const auto& mine: mines) {
+			visit_neighbors(3, mine.first, mine.second, [&contoller, &board, &has_win](int x, int y){
+				if(!has_win) {
+					has_win = (contoller->click(x, y) == Controller::ClickRes::Win);
+				}
+			});
+		}
 		ASSERT_TRUE(has_win);	
 	}
 }
