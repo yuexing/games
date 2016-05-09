@@ -46,7 +46,8 @@ static std::vector<std::pair<int, int>> flagAndGetNewNumPoints(const std::vector
 		auto p = q.front(); q.pop();
 
 		visit_neighbors(NBOARD, p.first, p.second, [&board, &old_board, &flagged, &res, &q](int x1, int y1){
-			if(board[x1][y1].cover == CellMeta::CoverType::UnCovered) {
+			if(board[x1][y1].cover == CellMeta::CoverType::UnCovered &&
+				old_board[x1][y1].cover == CellMeta::CoverType::Covered) {
 				flagAndRecordNewNumPoint(old_board, board, flagged, res, x1, y1);
 				q.push(std::make_pair(x1, y1));
 			}
