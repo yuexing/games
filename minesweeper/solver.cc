@@ -162,29 +162,18 @@ bool solve(std::shared_ptr<Controller>& controller)
 			}
 		}
 
-		// if cell.nMinesNearby == nFlaggedNeighors
-		// choose nUnFlaggedNeighbors
 		for(const auto& np: new_num_points) {
-			std::vector<std::pair<int, int>> unflaggedNeighors, unFlaggedCoveredNeighbors;
+			std::vector<std::pair<int, int>> unflaggedNeighors;
 			int nFlaggedNeighors;
-			visit_neighbors(NBOARD, np.first, np.second, [&board, &flagged, &unflaggedNeighors, &unFlaggedCoveredNeighbors, &nFlaggedNeighors](int x, int y){
+			visit_neighbors(NBOARD, np.first, np.second, [&board, &flagged, &unflaggedNeighors, &nFlaggedNeighors](int x, int y){
 				if(flagged.find(x * NBOARD + y) != flagged.end()) {
 					unflaggedNeighors.push_back(std::make_pair(x, y));
-					if(board[x][y].cover == CellMeta::CoverType::Covered) {
-						unFlaggedCoveredNeighbors.push_back(std::make_pair(x, y));
-					}
 				} else {
 					nFlaggedNeighors++;
 				}
 			});
-			// if cell.nMinesNearby == nFlaggedNeighors + nUnFlaggedCoveredNeighbors
-			// flag nUnFlaggedCoveredNeighbors 
-			if(nFlaggedNeighors + unFlaggedCoveredNeighbors.size() == board[np.first][np.second].nMinesNearby) {
-				for(const auto& n: unFlaggedCoveredNeighbors) {
-					LOG(__FUNCTION__ << " flag: " << n << std::endl);
-					flagged.insert(n.first * NBOARD + n.second);
-				}
-			}
+			// if cell.nMinesNearby == nFlaggedNeighors
+			// choose nUnFlaggedNeighbors
 			if(nFlaggedNeighors == board[np.first][np.second].nMinesNearby) {
 				for(const auto& n: unflaggedNeighors) {
 					LOG(__FUNCTION__ << " tovisit: " << n << std::endl);
@@ -193,19 +182,25 @@ bool solve(std::shared_ptr<Controller>& controller)
 			}
 		}
 
-		/* if an unflagged neighbor cell's neighbors all uncovered with number
+		/* if a cell's neighbors all uncovered; if they're all numbers, then a Mine; Otherwise, tovisit
 		for(const auto& np: new_num_points) {
-			visit_neighbors(NBOARD, np.first, np.second, [&board, &flagged](int x, int y) {
+			visit_neighbors(NBOARD, np.first, np.second, [&board, &flagged, &tovisit](int x, int y) {
 				if(flagged.find(NBOARD * x + y) == flagged.end()) {
-					int countNumNeighbors = 0;
-					visit_neighbors(NBOARD, x, y, [&board, &countNumNeighbors](int x1, int y1) {
-						if(board[x1][y1].cover == CellMeta::CoverType::UnCovered &&
-							board[x1][y1].nMinesNearby) {
-							countNumNeighbors++;
-						}
+					int nUncoveredNeighbors = 0, nNumberedNeighers = 0;
+					visit_neighbors(NBOARD, x, y, [&board, &nUncoveredNeighbors, &nNumberedNeighers, &tovisit](int x1, int y1) {
+						if(board[x1][y1].cover == CellMeta::CoverType::UnCovered) {
+							if(board[x1][y1].nMinesNearby) {
+								++nNumberedNeighers;
+							}
+							++nUncoveredNeighbors;
+						} 
 					});
-					if(countNumNeighbors == 7) {
-						flagged.insert(NBOARD * x + y);
+					if(nUncoveredNeighbors == 7) {
+						if(nNumberedNeighers == 7) {
+							flagged.insert(NBOARD * x + y);
+						} else {
+							tovisit.push(std::make_pair(x, y));
+						}
 					}
 				}
 			});
@@ -229,5 +224,5 @@ int main() {
 	std::time_t end = std::time(nullptr);
 
 	std::cout << "time usage(second): " << (end - start) << std::endl;
-	std::cout << "success rate: " << (count / (double)NUM_TRIES) << std::endl; 
+	std::cout << "success rate: " << (count / (double)NUM_TRIES) << std::endl;  
 }

@@ -69,7 +69,7 @@ int ConsoleView::get_nmines() {
 			return -1;
 		}
 
-		if(m_nmines < 0 || m_nmines > m_nboard * m_nboard) {
+		if(m_nmines < 0 || m_nmines >= m_nboard * m_nboard) {
 			m_nmines = 0;
 		}
 	}

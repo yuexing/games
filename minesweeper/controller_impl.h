@@ -14,6 +14,7 @@ private:
     std::vector<std::vector<CellMeta>> m_board;
     int m_nmines {0};
     int m_nuncovered {0};
+	bool m_is_first_click {true};
 };
 
 #endif /* CONTROLLER_IMPL_H */
