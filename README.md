@@ -35,7 +35,7 @@ The simple Minesweeper is written in cpp and doesn't suppor the 'Flag' functiona
 - how cell is manipulated?
 
 	- a cell is flagged if it's visited or 100% sure it's a Mine
-	- a cell is to visite if 100% sure it's not a Mine
+	- a cell is to visit if 100% sure it's not a Mine
 
 - how to select next node to explore?
 
@@ -52,8 +52,9 @@ The simple Minesweeper is written in cpp and doesn't suppor the 'Flag' functiona
 
 	- once a cell is clicked, it's neighbors are uncovered util the numbered cells (whose neighbors have Mine). The numbered cells can tell us:
 
-		- if the number of covered cells equals the number, then all covered cells are Mine;
-		- if the number of flagged cells equals the number, then all covered cells are to visit;
+		- if the number of covered neighbors equals the number, then all of them are Mine;
+		
+		- For the covered neighbors, if the number of flagged cells equals the number, then unflagged cells are to visit;
 
 		- if a cell has all the neighbors uncovered: if they're all numbered, then the cell is a Mine; Otherwise, the cell is safe to visit; [Not sure why, this hypothesis doesn't make things well]
 

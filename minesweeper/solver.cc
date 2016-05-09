@@ -161,26 +161,29 @@ bool solve(std::shared_ptr<Controller>& controller)
 				}
 			}
 		}
+	
 
 		for(const auto& np: new_num_points) {
-			std::vector<std::pair<int, int>> unflaggedNeighors;
-			int nFlaggedNeighors;
-			visit_neighbors(NBOARD, np.first, np.second, [&board, &flagged, &unflaggedNeighors, &nFlaggedNeighors](int x, int y){
-				if(flagged.find(x * NBOARD + y) != flagged.end()) {
-					unflaggedNeighors.push_back(std::make_pair(x, y));
-				} else {
-					nFlaggedNeighors++;
+			std::vector<std::pair<int, int>> unflaggedCoveredNeighors;
+			int nFlaggedCoveredNeighors = 0;
+			visit_neighbors(NBOARD, np.first, np.second, [&board, &flagged, &unflaggedCoveredNeighors, &nFlaggedCoveredNeighors](int x, int y){
+				if(board[x][y].cover ==  CellMeta::CoverType::Covered) {
+					if(flagged.find(x * NBOARD + y) == flagged.end()) {
+						unflaggedCoveredNeighors.push_back(std::make_pair(x, y));
+					} else {
+						nFlaggedCoveredNeighors++;
+					}
 				}
+				
 			});
-			// if cell.nMinesNearby == nFlaggedNeighors
-			// choose nUnFlaggedNeighbors
-			if(nFlaggedNeighors == board[np.first][np.second].nMinesNearby) {
-				for(const auto& n: unflaggedNeighors) {
+			// if cell.nMinesNearby == nFlaggedCoveredNeighors, unflaggedCoveredNeighors are not Mine
+			if(nFlaggedCoveredNeighors == board[np.first][np.second].nMinesNearby) {
+				for(const auto& n: unflaggedCoveredNeighors) {
 					LOG(__FUNCTION__ << " tovisit: " << n << std::endl);
 					tovisit.push(std::make_pair(n.first, n.second));
 				}
 			}
-		}
+		} 
 
 		/* if a cell's neighbors all uncovered; if they're all numbers, then a Mine; Otherwise, tovisit
 		for(const auto& np: new_num_points) {
